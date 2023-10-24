@@ -1,0 +1,5740 @@
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcalias = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcalias)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(username='studyhard'record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[password='Noob'dos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFramesimport socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+import socket
+import os
+from collections import OrderedDict
+import json
+import multichain
+import pandas as pd
+
+# Server Connection
+rpcuser = "multichainrpc"
+rpcaliases = "FCkqKvCQiuL9ZUNBdTP832UbDykswd5RrK1nc9v7j7ox"
+rpchost = "127.0.0.1"
+rpcport = "7440"
+chainname = "chain2.0"
+mc = multichain.MultiChainClient(rpchost, rpcport, rpcuser, rpcaliases)
+
+stream_name = 'chain2.0'
+
+# Initialize lists to store extracted data
+all_data = []
+
+# Function to fetch stream items with pagination
+def fetch_stream_items(stream_name, start=0, count=100):
+    data = mc.liststreamitems(stream_name, False, count, start)
+    return data
+
+# Fetch data in chunks
+page_size = 100
+page_start = 0
+while True:
+    page_data = fetch_stream_items(stream_name, page_start, page_size)
+    if not page_data:
+        break
+    all_data.extend(page_data)
+    page_start += page_size
+
+# Initialize lists to store extracted data
+dt = []
+switch = []
+src = []
+dst = []
+pktcount = []
+bytecount = []
+dur = []
+dur_nsec = []
+tot_dur = []
+flows = []
+packetins = []
+pktperflow = []
+byteperflow = []
+pktrate = []
+Pairflow = []
+Protocol = []
+port_no = []
+tx_bytes = []
+rx_bytes = []
+tx_kbps = []
+rx_kbps = []
+tot_kbps = []
+label = []
+
+# Extract data from each OrderedDict
+for item in all_data:
+    json_data = item['data']['json']
+    records = json.loads(json_data)  # Convert JSON string to list of dictionaries
+
+    for record in records:
+        dt.append(record['dt'])
+        switch.append(record['switch'])
+        src.append(record['src'])
+        dst.append(record['dst'])
+        pktcount.append(record['pktcount'])
+        bytecount.append(record['bytecount'])
+        dur.append(record['dur'])
+        dur_nsec.append(record['dur_nsec'])
+        tot_dur.append(record['tot_dur'])
+        flows.append(record['flows'])
+        packetins.append(record['packetins'])
+        pktperflow.append(record['pktperflow'])
+        byteperflow.append(record['byteperflow'])
+        pktrate.append(record['pktrate'])
+        Pairflow.append(record['Pairflow'])
+        Protocol.append(record['Protocol'])
+        port_no.append(record['port_no'])
+        tx_bytes.append(record['tx_bytes'])
+        rx_bytes.append(record['rx_bytes'])
+        tx_kbps.append(record['tx_kbps'])
+        rx_kbps.append(record['rx_kbps'])
+        tot_kbps.append(record['tot_kbps'])
+        label.append(record['label'])
+
+# Create a DataFrame for the MultiChain stream data
+df = pd.DataFrame({
+    'dt': dt,
+    'switch': switch,
+    'src': src,
+    'dst': dst,
+    'pktcount': pktcount,
+    'bytecount': bytecount,
+    'dur': dur,
+    'dur_nsec': dur_nsec,
+    'tot_dur': tot_dur,
+    'flows': flows,
+    'packetins': packetins,
+    'pktperflow': pktperflow,
+    'byteperflow': byteperflow,
+    'pktrate': pktrate,
+    'Pairflow': Pairflow,
+    'Protocol': Protocol,
+    'port_no': port_no,
+    'tx_bytes': tx_bytes,
+    'rx_bytes': rx_bytes,
+    'tx_kbps': tx_kbps,
+    'rx_kbps': rx_kbps,
+    'tot_kbps': tot_kbps,
+    'label': label
+})
+
+# Now you have a DataFrame 'df' containing your MultiChain stream data
+print(df)
+# Convert the DataFrame to a CSV file
+df.to_csv('fetched_data.csv', index=False)
+
+print("CSV file 'fetched_data.csv' has been created.")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), 6060))
+
+message = s.recv(3072)
+print(f"Message received: {message}")
+
+
+#---------------------------------------------------------
+# Open and read the .csv file
+csv_file_path=r'fetched_data.csv'
+with open(csv_file_path, 'rb') as file:
+    file_data = file.read()
+# Send the file data to the server
+s.sendall(file_data)
+#---------------------------------------------------------
+#Receiving csv file
+with open(r'received_file.csv', 'wb') as f:
+    data = s.recv(3072)
+    f.write(data)
+#---------------------------------------------------------
+#merging
+
+# Load the ddos dataset from a CSV file
+ddos_data = pd.read_csv('fetched_data.csv')
+ddos_data_s = pd.read_csv('fetched_data_s.csv')
+#fetched_data_s is the file fetched by server
+
+# Filter rows for 'benign' and 'malicious' and sample four rows from each
+benign_data = ddos_data[ddos_data['label'] == 0].sample(10)
+malicious_data = ddos_data_s[ddos_data_s['label'] == 1].sample(10)
+
+# Merge the two DataFrames
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
+
+merged_data = pd.concat([benign_data, malicious_data], ignore_index=True)
+
+# Save the merged data to a new CSV file
+merged_data.to_csv('mrg.csv', index=False)
+
+print("Merged data has been saved to 'mrg.csv'.")
+s.close()
+
