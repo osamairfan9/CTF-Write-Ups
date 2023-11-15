@@ -9,8 +9,8 @@ web_url="https://github.com/osamairfan9/CTF/raw/main/Workshop/index.html"
 binary_url="https://github.com/osamairfan9/CTF/raw/main/Workshop/binary.jpeg"
 
 # Destinations
-dest1="$HOME/Downloads"
-dest2="$HOME/Pictures"
+dest1="/home/kali/Downloads"
+dest2="/home/kali/Pictures"
 
 # Folder 1
 folder1="$dest1/ACM"
