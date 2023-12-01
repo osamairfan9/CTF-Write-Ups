@@ -1,1 +1,1 @@
-Uzair Lab Mid/traffic.pcapng
+[Uzair Lab Mid/traffic.pcapng](https://github.com/osamairfan9/CTF/blob/426efeb102db7bf36a19f4fcad4dc51b61cb7d92/Uzair%20Lab%20Mid/traffic.pcapng)https://github.com/osamairfan9/CTF/blob/426efeb102db7bf36a19f4fcad4dc51b61cb7d92/Uzair%20Lab%20Mid/traffic.pcapng
