@@ -1,6 +1,7 @@
-###                             Cyber Security Lab Mid
+### Cyber Security Lab Mid
+Time: 90 minutes
 
-
+---
 Q1. How about some hide and seek heh? Download this file and find the **Flag**.     
 https://github.com/osamairfan9/CTF/blob/main/Uzair%20Lab%20Mid/traffic.pcapng
 
