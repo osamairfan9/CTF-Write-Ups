@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Q&A Interface</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-image: url('image.jpg'); /* Replace 'image.jpg' with your actual image file path */
+      background-size: cover; /* Adjusts the background image size */
+      background-position: center; /* Centers the background image */
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    .submit-btn {
+      padding: 8px 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .submit-btn:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Cyber Security Lab Mid</h1>
+  <p>Time: 90 minutes</p>
+
+  <div class="question">
+    <label for="question1">Q1. How about some hide and seek heh? Download this file and find the Flag.</label>
+    <a href="https://github.com/osamairfan9/CTF/blob/main/Uzair%20Lab%20Mid/traffic.pcapng">Download traffic.pcapng</a>
+    <input type="text" id="answer1" placeholder="Enter your Flag here">
+    <button class="submit-btn" onclick="submitAnswer(1)">Submit Answer</button>
+  </div>
+  <div class="question">
+    <label for="question2">Q2. The SOC analyst saw one image been sent back and forth between two people. They decided to investigate and found out that there was more than what meets the eye. Download the picture: </label>
+    <a href="https://github.com/osamairfan9/CTF/blob/main/Uzair%20Lab%20Mid/rickandmort.jpg">rickandmort.jpg</a>
+    <input type="text" id="answer2_1" placeholder="Enter your first answer">
+    <input type="text" id="answer2_2" placeholder="Enter your second answer">
+    <button class="submit-btn" onclick="submitAnswer(2)">Submit Answer</button>
+  </div>
+  <div class="question">
+    <label for="question3">Q3. I am back again with some new tricks find my 'username' and 'password' taking help with the above two questions and find the Flag hehe.</label>
+    <a href="https://linux-for-dummies.vercel.app">Openlink</a>
+    <input type="text" id="answer3" placeholder="Enter your Flag here">
+    <button class="submit-btn" onclick="submitAnswer(3)">Submit Answer</button>
+  </div>
+
+  <script>
+    function submitAnswer(questionNumber) {
+      let answer1, answer2_1, answer2_2, answer3;
+      
+      switch (questionNumber) {
+        case 1:
+          answer1 = document.getElementById('answer1').value.toLowerCase();
+          if (answer1 === "flag{sup3rs3cur3passw0rd}") {
+            alert(`Hooray! Your answer to Question ${questionNumber} is correct!`);
+          } else {
+            alert(`Sorry! Better luck next time for Question ${questionNumber}.`);
+          }
+          break;
+        case 2:
+          answer2_1 = document.getElementById('answer2_1').value.toLowerCase();
+          answer2_2 = document.getElementById('answer2_2').value.toLowerCase();
+          if (answer2_1 === "studyhard" && answer2_2 === "noob") {
+            alert(`Hooray! Your answers to Question ${questionNumber} are correct!`);
+          } else {
+            alert(`Sorry! Better luck next time for Question ${questionNumber}.`);
+          }
+          break;
+        case 3:
+          answer3 = document.getElementById('answer3').value.toLowerCase();
+          if (answer3 === "acmcys{h@ck3r_m@n}") {
+            alert(`Hooray! Your answer to Question ${questionNumber} is correct!`);
+          } else {
+            alert(`Sorry! Better luck next time for Question ${questionNumber}.`);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  </script>
+</body>
+</html>
