@@ -7,33 +7,40 @@ The Band of the Hawk was betrayed, and their secret communications were intercep
 
 1. Open The Hawk’s Last Cry.pcapng in Wireshark.
 2. Analyze the stream, you'll find some http packets. apply the filter to isolate HTTP traffic.
+   ![image](https://github.com/user-attachments/assets/9700f04d-c064-4f42-9759-a45b110c1103)
+
+3. Right-click on the relevant packet → Follow → TCP Stream. 
+   ![image](https://github.com/user-attachments/assets/3d5f4fd1-aadc-42dd-84ba-64ea7b5c8816)
+
+4. There you'll find a suspicious jpg file.
+   ![image](https://github.com/user-attachments/assets/a1140616-6958-4b30-968b-4e8253319744)
+
+5. Sometimes, HTTP headers or unwanted data get mixed with the image bytes.Export Objects may not strip these correctly, leading to broken images.
    
-4. There you will find a suspicious jpg file. Right-click on the relevant packet → Follow → TCP Stream.
-   
-6. In the Follow TCP Stream window:
+6. Therefore, In the Follow TCP Stream window:
     Set the display format to Raw.
     Save As → image.jpg.
    ![image](https://github.com/user-attachments/assets/22f2ea82-a6d7-4794-a6ea-c6453f8a0876)
 
-7. ![image](https://github.com/user-attachments/assets/4254cccf-5f8f-4d43-9086-9ba8a4ccceef)
+7. Open image.raw in a hex editor and look for the jpg headers I am using an online hexeditor: 
+   ![image](https://github.com/user-attachments/assets/4254cccf-5f8f-4d43-9086-9ba8a4ccceef)
 
-8. Open image.raw in a hex editor and look for the jpg headers I am using an online hexeditor:
+8. Apply filter for the jpg marker **(FFD8)**
    ![image](https://github.com/user-attachments/assets/087deb62-c1f6-49c3-beda-33964eaa4028)
 
+   Manually trim everything before FFD8 and after FFD9 (jpg markers) and save itor copy everything from FFD8 to FFD9 and save it as Band of Hawks.jpg.
     Start of Image (SOI): FFD8
     End of Image (EOI): FFD9
     
-10. Copy everything from FFD8 to FFD9 and save it as Band of Hawks.jpg or another method to remove every header before FFD8 and save it as Band of Hawks.jpg.
-    
 12. Open Band of Hawks.jpg and look closely for any visible text on the image.
+    ![image](https://github.com/user-attachments/assets/afd46081-2784-4edf-a497-7526783fd689)
     
-The text serves as the passphrase for the next step.
+    The text serves as the passphrase for the next step.
 
-14. Use Steghide to extract hidden data from the image:
- > steghide extract -sf "Band of Hawks.jpg"
+14. Use Steghide to extract hidden data from the image, when prompted, use the text found on the image as the passphrase.
+  > steghide extract -sf "Band of Hawks.jpg"
+   ![image](https://github.com/user-attachments/assets/b10c8ca9-810f-4943-87f8-3d2f627353f2)
 
-9. When prompted, use the text found on the image as the passphrase.
-    
 11. Upon successful extraction, you'll retrieve a secret.txt file containing the flag.
     ![image](https://github.com/user-attachments/assets/1e619ea0-c8fc-4a6f-8759-4c8c1ecba7b3)
     (Note: Remove one bracket from the flag as it was a typo error.)
