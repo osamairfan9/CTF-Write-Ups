@@ -10,6 +10,7 @@
    ![Uncover(1)](https://github.com/user-attachments/assets/1ca8cde3-3ad2-49e8-a040-bba569db3bd5)
 
    The QR will look like this then.
+   
    ![Uncover](https://github.com/user-attachments/assets/b6388f98-5797-4552-b2e8-109a6cecedf2)
 
 3. Scan the QR code, it will redirect you to the github repo containing an image.
