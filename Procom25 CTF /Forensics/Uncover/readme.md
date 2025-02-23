@@ -1,10 +1,10 @@
-![image](https://github.com/user-attachments/assets/488dbbaf-8d29-43fd-97cb-56b52b6f0e69)Challenge Name: Uncover
+Challenge Name: Uncover
 
-Difficulty: Medium
+**Difficulty:** Medium
 
-A shattered QR, cursed like the Brand of Sacrifice, blocks your path. Restore it to unveil a hidden domain where the true struggle begins. Only the worthy will find the flag before fate claims them!
+**Description:** A shattered QR, cursed like the Brand of Sacrifice, blocks your path. Restore it to unveil a hidden domain where the true struggle begins. Only the worthy will find the flag before fate claims them!
 
-Author: Osama Irfan
+**Author:** Osama Irfan
 
 1. Transform the given QR code by using any image editor.
 
@@ -18,7 +18,7 @@ Author: Osama Irfan
    ![image](https://github.com/user-attachments/assets/560963f2-7000-40e9-97bd-7134bc3627d7)
 
 4. Flag is stored as a copyrite
-   ![Uploading image.png…]()
+   ![image](https://github.com/user-attachments/assets/12242351-04f7-4cd3-b5b2-8cb8757d2677)
 
 5. **Flag: AxP25{MarkedForSacrifice_216}**
 
