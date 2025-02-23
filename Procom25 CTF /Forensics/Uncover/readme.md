@@ -1,4 +1,4 @@
-Challenge Name: Uncover
+**Challenge Name:** Uncover
 
 **Difficulty:** Medium
 
