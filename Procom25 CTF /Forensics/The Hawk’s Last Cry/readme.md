@@ -8,7 +8,7 @@ The Band of the Hawk was betrayed, and their secret communications were intercep
 **Author:** Osama Irfan
 
 1. Open The Hawk’s Last Cry.pcapng in Wireshark.
-2. Analyze the stream, you'll find some http packets. apply the filter to isolate HTTP traffic.
+2. Analyze the stream, you'll find some http packets. Apply the filter to isolate HTTP traffic.
    ![image](https://github.com/user-attachments/assets/9700f04d-c064-4f42-9759-a45b110c1103)
 
 3. Right-click on the relevant packet → Follow → TCP Stream. 
@@ -17,21 +17,25 @@ The Band of the Hawk was betrayed, and their secret communications were intercep
 4. There you'll find a suspicious jpg file.
    ![image](https://github.com/user-attachments/assets/a1140616-6958-4b30-968b-4e8253319744)
 
-5. Sometimes, HTTP headers or unwanted data get mixed with the image bytes.Export Objects may not strip these correctly, leading to broken images.
+5. Sometimes, HTTP headers or unwanted data get mixed with the image bytes. Export Objects may not strip these correctly, leading to broken images.
    
 6. Therefore, In the Follow TCP Stream window:
     Set the display format to Raw.
     Save As → image.jpg.
+
+   The image will initially not open as it is broken.
    ![image](https://github.com/user-attachments/assets/22f2ea82-a6d7-4794-a6ea-c6453f8a0876)
 
-7. Open image.raw in a hex editor and look for the jpg headers I am using an online hexeditor: 
+8. Open image.raw in a hex editor and look for the jpg headers I am using an online hexeditor: 
    ![image](https://github.com/user-attachments/assets/4254cccf-5f8f-4d43-9086-9ba8a4ccceef)
 
-8. Apply filter for the jpg marker **(FFD8)**
+9. Apply filter for the jpg marker **(FFD8)**
    ![image](https://github.com/user-attachments/assets/087deb62-c1f6-49c3-beda-33964eaa4028)
 
-   Manually trim everything before FFD8 and after FFD9 (jpg markers) and save itor copy everything from FFD8 to FFD9 and save it as Band of Hawks.jpg.
+   Manually trim everything before FFD8 and after FFD9 (jpg markers) and save it or copy everything from FFD8 to FFD9 and save it as Band of Hawks.jpg.
+   
     Start of Image (SOI): FFD8
+   
     End of Image (EOI): FFD9
     
 12. Open Band of Hawks.jpg and look closely for any visible text on the image.
