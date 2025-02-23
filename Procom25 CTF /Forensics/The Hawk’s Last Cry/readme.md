@@ -29,7 +29,7 @@ The Band of the Hawk was betrayed, and their secret communications were intercep
 8. Open image.raw in a hex editor and look for the jpg headers I am using an online hexeditor: 
    ![image](https://github.com/user-attachments/assets/4254cccf-5f8f-4d43-9086-9ba8a4ccceef)
 
-9. Apply filter for the jpg marker **(FFD8)**
+9. Search for the jpg marker **(FFD8)**
    ![image](https://github.com/user-attachments/assets/087deb62-c1f6-49c3-beda-33964eaa4028)
 
    Manually trim everything before FFD8 and after FFD9 (jpg markers) and save it or copy everything from FFD8 to FFD9 and save it as Band of Hawks.jpg.
