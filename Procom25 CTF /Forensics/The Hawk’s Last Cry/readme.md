@@ -46,9 +46,10 @@ The Band of the Hawk was betrayed, and their secret communications were intercep
 14. Use Steghide to extract hidden data from the image, when prompted, use the text found on the image as the passphrase.
      > steghide extract -sf "Band of Hawks.jpg"
 
-    ![image](https://github.com/user-attachments/assets/b10c8ca9-810f-4943-87f8-3d2f627353f2)
+    ![image](https://github.com/user-attachments/assets/be62d7b2-3ff8-454e-9982-113d4ea7a7b8)
 
 11. Upon successful extraction, you'll retrieve a secret.txt file containing the flag.
-    ![image](https://github.com/user-attachments/assets/1e619ea0-c8fc-4a6f-8759-4c8c1ecba7b3)
-    (Note: Remove one bracket from the flag as it was a typo error.)
+    ![image](https://github.com/user-attachments/assets/3e25716c-ea27-423f-88ed-4dc992d3a5fb)
+
+    (Note: Remove an extra bracket from the flag as it was a typo error.)
 
