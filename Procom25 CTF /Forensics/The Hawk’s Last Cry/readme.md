@@ -53,3 +53,4 @@ The Band of the Hawk was betrayed, and their secret communications were intercep
 
     (Note: Remove an extra bracket from the flag as it was a typo error.)
 
+12. **Flag:** **AxP25{HawkFallen_BetrayalHiddenInShadows}**
